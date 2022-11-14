@@ -12,6 +12,8 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   },
 });
 
+console.log(process.env.DATABASE_URL);
+
 let blog = sequelize.define("blogs", {
     id: {
         type: DataTypes.INTEGER,
@@ -63,17 +65,42 @@ Note.init({
   modelName: 'note'
 })
 
+Note.sync()
+
 app.get('/api/notes', async (req, res) => {
   const notes = await Note.findAll()
   res.json(notes)
 })
 
+app.get('/api/notes/:id', async (req, res) => {
+    const note = await Note.findByPk(req.params.id)
+    if (note) {
+      res.json(note)
+    } else {
+      res.status(404).end()
+    }
+  })
 
 app.get('/api/blogs', async (req, res) => {
-    const blogs = await blog.findAll()
-    res.json(blogs)
+    const blogs = await blog.findAll();
+
+    res.json(blogs);
   })
-  
+
+app.post('/api/blogs', async (req, res) => {
+    const blog = await blog.create(req.body);
+
+    res.json(blog);
+  })
+
+app.delete('/api/blogs/:id', async (req, res) => {
+    const {id} = req.body;
+
+    const blog = await blog.destroy({ where: { id } });
+
+    res.json(blog);
+  })
+
 
 const PORT = process.env.PORT || 3002
 
