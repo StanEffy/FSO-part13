@@ -1,7 +1,17 @@
-require('dotenv').config()
-const { Sequelize, Model, DataTypes, QueryTypes } = require('sequelize')
-const express = require('express')
-const app = express()
+require('dotenv').config();
+const { Sequelize, Model, DataTypes, QueryTypes } = require('sequelize');
+const express = require('express');
+const app = express();
+const bodyParser = require("body-parser");
+
+
+
+
+// create application/x-www-form-urlencoded parser
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
+
+    app.use(urlencodedParser);
+
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialectOptions: {
@@ -12,9 +22,8 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   },
 });
 
-console.log(process.env.DATABASE_URL);
 
-let blog = sequelize.define("blogs", {
+let Blog = sequelize.define("blogs", {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -65,7 +74,7 @@ Note.init({
   modelName: 'note'
 })
 
-Note.sync()
+Blog.sync()
 
 app.get('/api/notes', async (req, res) => {
   const notes = await Note.findAll()
@@ -82,21 +91,23 @@ app.get('/api/notes/:id', async (req, res) => {
   })
 
 app.get('/api/blogs', async (req, res) => {
-    const blogs = await blog.findAll();
+    const blogs = await Blog.findAll();
 
     res.json(blogs);
   })
 
 app.post('/api/blogs', async (req, res) => {
-    const blog = await blog.create(req.body);
+    const {body} = req;
+    
+    const newBlog = await Blog.create(body);
 
-    res.json(blog);
+     res.json("DONE");
   })
 
 app.delete('/api/blogs/:id', async (req, res) => {
-    const {id} = req.body;
+    const {id} = req.params;
 
-    const blog = await blog.destroy({ where: { id } });
+    const blog = await Blog.destroy({ where: { id } });
 
     res.json(blog);
   })
