@@ -13,7 +13,11 @@ User.init({
   username: {
     type: DataTypes.STRING,
     unique: true,
-    allowNull: false
+    allowNull: false,
+    validate: {
+        //this abomination is a valid email address with only one AT sign possible
+        is: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    }
   },
   name: {
     type: DataTypes.STRING,
@@ -22,7 +26,6 @@ User.init({
 }, {
   sequelize,
   underscored: true,
-  timestamps: false,
   modelName: 'user'
 })
 
