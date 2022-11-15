@@ -12,6 +12,8 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 const notesRouter = require('./controllers/notes')
 const blogsRouter = require('./controllers/blogs')
+const usersRouter = require('./controllers/users')
+const loginRouter = require('./controllers/login')
 
 app.use(express.json())
 
@@ -19,6 +21,9 @@ app.use(urlencodedParser);
 
 app.use('/api/notes', notesRouter)
 app.use('/api/blogs', blogsRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/login', loginRouter)
+
 app.use(unknownEndpoint)
   
 app.use(errorHandler);
@@ -31,13 +36,3 @@ const start = async () => {
 }
 
 start()
-
-
-
-
-
-// create application/x-www-form-urlencoded parser
-// 
-
-//     app.use(urlencodedParser);
-
