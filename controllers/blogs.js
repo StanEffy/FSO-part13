@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const tokenExtractor = require("../util/middleware")
-const { Op } = require("sequelize");
+const { Op, col } = require("sequelize");
 
 const { Blog, User } = require('../models')
 
@@ -31,6 +31,7 @@ router.get('/', async (req, res) => {
         model: User,
         attributes: ['name']
       },
+      order: [['likes', 'DESC']],
       where
     })
     res.json(blogs)
