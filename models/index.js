@@ -29,4 +29,5 @@ module.exports = {
   User,
   Team,
   UserNotes,
+  Readlist,
 };
