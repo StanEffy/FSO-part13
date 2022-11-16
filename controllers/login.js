@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const router = require("express").Router();
-
+const Session = require("../models/session");
 const { SECRET } = require("../util/config");
 const User = require("../models/user");
 
@@ -20,23 +20,31 @@ router.post("/", async (request, response) => {
       error: "invalid username or password",
     });
   }
-  
+
   if (user.disabled) {
     return response.status(401).json({
-      error: 'account disabled, please contact admin'
-    })
+      error: "account disabled, please contact admin",
+    });
   }
 
-  const userForToken = {
-    username: user.username,
-    id: user.id,
-  };
+  const session = await Session.findOne({ where: { userId: user.id } });
 
-  const token = jwt.sign(userForToken, SECRET);
+  if (!session) {
+    const userForToken = {
+      username: user.username,
+      id: user.id,
+    };
 
-  response
-    .status(200)
-    .send({ token, username: user.username, name: user.name });
+    const token = jwt.sign(userForToken, SECRET);
+    Session.create({
+      token,
+      userId: user.id,
+    });
+    response
+      .status(200)
+      .send({ token, username: user.username, name: user.name });
+  }
+  response.status(200).send({ token: session.token });
 });
 
 module.exports = router;
