@@ -13,6 +13,7 @@ Blog.init(
     },
     author: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     url: {
       type: DataTypes.STRING,
@@ -30,7 +31,7 @@ Blog.init(
   {
     sequelize,
     underscored: true,
-    timestamps: false,
+    timestamps: true,
     modelName: "blogpost",
     freezeTableName: true,
   }

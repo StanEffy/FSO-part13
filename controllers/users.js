@@ -30,7 +30,15 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.put("/:username", async (req, res) => {
+const isAdmin = async (req, res, next) => {
+  const user = await User.findByPk(req.decodedToken.id)
+  if (!user.admin) {
+    return res.status(401).json({ error: 'operation not allowed' })
+  }
+  next()
+}
+
+router.put("/:username", isAdmin, async (req, res) => {
   const user = await User.findOne({
     where: {
       username: req.params.username,
